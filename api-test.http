@@ -1,0 +1,61 @@
+GET http://localhost:8000/api/categories
+
+
+
+###
+
+
+
+POST http://localhost:8000/api/categories
+content-type: application/json
+
+{
+    "name": "çocuk",
+    "description": "çocuk"
+}
+
+###
+
+
+PUT http://localhost:8000/api/categories/1
+content-type: application/json
+
+{
+    "name": "Elektronik",
+    "description": "elektronnnik",
+
+}
+
+###
+
+GET http://localhost:8000/api/products
+
+
+
+###
+
+
+
+POST http://localhost:8000/api/products
+content-type: application/json
+
+{
+    "name": "çocuk",
+    "description": "çocuk",
+    "price":12,
+    "stock": 1,
+    "categoryid": 1
+}
+
+###
+
+
+PUT http://localhost:8000/api/products/1
+content-type: application/json
+
+{
+    "name": "Elektronik",
+    "description": "elektronnnik",
+
+}
+
