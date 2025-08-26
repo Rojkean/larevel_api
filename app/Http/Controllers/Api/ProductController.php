@@ -51,7 +51,11 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
-        dd($product);
+           $input = $request->json()->all();
+           if (empty($input)) {
+           $input = $request->all();
+           }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -60,7 +64,15 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
 
-        $product->update($validated);
+        $product->fill($validated);
+             if (! $product->isDirty()) {
+        return response()->json([
+            'updated' => false,
+            'message' => 'Güncellenecek alan yok veya gelen değerler aynı.',
+            'data'    => $product
+        ]);
+    }
+        $product->save();
         $product->load('category');
 
         return response()->json($product);

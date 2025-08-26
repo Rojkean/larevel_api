@@ -21,18 +21,35 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-        ]);
-
-        $category = Category::create($validated);
-
-        return response()->json($category, Response::HTTP_CREATED);
+   public function update(Request $request, Category $category)
+{
+    // JSON’u zorla al, yoksa form/all
+    $input = $request->json()->all();
+    if (empty($input)) {
+        $input = $request->all();
     }
 
+    // (İstersen debug)
+    // \Log::info(['raw'=>$request->getContent(), 'parsed_json'=>$request->json()->all(), 'parsed_all'=>$request->all()]);
+
+    $validated = validator($input, [
+        'name'        => 'sometimes|required|string|max:255',
+        'description' => 'sometimes|nullable|string|max:500',
+    ])->validate();
+
+    $category->fill($validated);
+
+    if (! $category->isDirty()) {
+        return response()->json([
+            'updated' => false,
+            'message' => 'Güncellenecek alan yok veya gelen değerler aynı.',
+            'data'    => $category
+        ]);
+    }
+
+    $category->save();
+
+    return response()->json($category->fresh());
     /**
      * Display the specified resource.
      */
